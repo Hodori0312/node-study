@@ -1,3 +1,4 @@
+//npm 모듈 선언부분
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -5,12 +6,14 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
+//라우터 선언
 var index = require('./routes/index');
 var users = require('./routes/users');
 
+//Express 프레임워크 초기화
 var app = express();
 
-// view engine setup
+// View 엔진 정의
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -26,14 +29,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 
-// catch 404 and forward to error handler
+// 404에러 처리부분(파일이 없을 경우)
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-// error handler
+// 에러 처리 부분
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
