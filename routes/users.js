@@ -32,9 +32,8 @@ router.get('/', function(req, res, next) {
 
 router.get('/:user_code',function(req,res,next){
   var code = req.params.user_code;
-  
   //sql 정의
-  var sql = 'select id,name,tel,birthday from User where code=?';
+  var sql = 'select id,name,tel,DATE_FORMAT(birthday,"%Y-%m-%d") as birthday from User where code=?';
   //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
   conn.query(sql,[code],function(err,rows,fields){
     //쿼리실행의 콜백함수 정의
@@ -73,6 +72,33 @@ router.post('/', function(req, res, next) {
   var sql = 'insert into User (id,password,name,tel,birthday,ip,reg_date) values (?,?,?,?,?,?,?)';
   //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
   conn.query(sql,[id,password,name,tel,birth,ip,now],function(err,rows,fields){
+    //쿼리실행의 콜백함수 정의
+    if(err) {
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    }else {
+      res.redirect('/');     
+    }
+  });
+});
+
+//회원수정처리
+
+router.post('/:user_id', function(req, res, next) {
+  var id = req.body.id;
+  var password = req.body.password;
+  //password 암호화 부분
+  var shasum = crypto.createHash('sha512');
+  shasum.update(password);
+  password = shasum.digest('hex');
+  var name = req.body.name;
+  var tel = req.body.tel;
+  var birth = req.body.birth;
+  var code = req.params.user_code;
+  //sql 정의
+  var sql = 'update User set password=?,name=?,tel=?,birthday=? where code=?';
+  //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
+  conn.query(sql,[password,name,tel,birth,code],function(err,rows,fields){
     //쿼리실행의 콜백함수 정의
     if(err) {
       console.log(err);
