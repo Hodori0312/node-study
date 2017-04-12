@@ -3,8 +3,6 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
-const moment = require('moment');
-const requestIp = require('request-ip');
 const db_config  = require('../db-config.json');
 const crypto = require('crypto');
 
@@ -23,7 +21,7 @@ conn.connect();
 /* GET home page. */
 //user.js의 '/'로 들어오는 처리를 받을 라우터 정의
 router.get('/', function(req, res, next) {
-  res.render('users', { title: 'Express' });
+  res.render('login', { title: 'Express' });
 });
 
 /*POST로 들어온 처리*/
@@ -31,27 +29,25 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   var id = req.body.id;
   var password = req.body.password;
-  //password 암호화 부분
   var shasum = crypto.createHash('sha512');
   shasum.update(password);
   password = shasum.digest('hex');
-  var name = req.body.name;
-  var tel = req.body.tel;
-  var birth = req.body.birth;
-  //현재 시간정보를 받아옴
-  var now=moment().format('YYYY-MM-DD HH:mm:ss');
-  //현재 접속한 ip정보를 받아옴
-  var ip =requestIp.getClientIp(req);
   //sql 정의
-  var sql = 'insert into User (id,password,name,tel,birthday,ip,reg_date) values (?,?,?,?,?,?,?)';
+  var sql = 'select count(*) as cnt from User where id=? and password=?';
   //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
-  conn.query(sql,[id,password,name,tel,birth,ip,now],function(err,rows,fields){
+  conn.query(sql,[id,password],function(err,rows,fields){
     //쿼리실행의 콜백함수 정의
     if(err) {
       console.log(err);
       res.status(500).send('Internal Server Error');
     }else {
-      res.redirect('/');     
+      var cnt=rows[0].cnt;
+      if(cnt==1){
+        req.session.user_id=id;
+        res.send('<script>alert("정상적으로 로그인 되었습니다");location.href="/";</script>');
+      }else{
+        res.send('<script>alert("아이디나 비밀번호가 틀립니다");return false;</script>');
+      }
     }
   });
 });
