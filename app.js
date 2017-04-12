@@ -10,7 +10,6 @@ const session = require('express-session');
 //라우터 선언
 var index = require('./routes/index');
 var users = require('./routes/users');
-var login = require('./routes/login');
 
 //Express 프레임워크 초기화
 var app = express();
@@ -36,14 +35,14 @@ app.use(session({
 // 세션을 모든 곳에서 사용 가능하도록 만든다.
 app.use(function(req, res, next) {
   res.locals.user_id = req.session.user_id;
-  res.locals.user_name = req.session.user_name
+  res.locals.user_name = req.session.user_name;
+  res.locals.user_code = req.session.user_code;
   next();
 });
 
 //해당 주소로 넘어오면 라우팅 파일 활성
 app.use('/', index);
 app.use('/users', users);
-app.use('/login', login);
 
 // 404에러 처리부분(파일이 없을 경우)
 app.use(function(req, res, next) {

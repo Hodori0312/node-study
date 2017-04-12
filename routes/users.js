@@ -20,10 +20,37 @@ var conn = mysql.createConnection({
 //mysql 연결처리
 conn.connect();
 
+function loginCheck(){
+  if(req.session.user_code!=code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>')
+}
+
 /* GET home page. */
 //user.js의 '/'로 들어오는 처리를 받을 라우터 정의
 router.get('/', function(req, res, next) {
   res.render('users', { title: 'Express' });
+});
+
+router.get('/:user_code',function(req,res,next){
+  var code = req.params.user_code;
+  
+  //sql 정의
+  var sql = 'select id,name,tel,birthday from User where code=?';
+  //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
+  conn.query(sql,[code],function(err,rows,fields){
+    //쿼리실행의 콜백함수 정의
+    if(err) {
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    }else {
+      res.render('users', {
+        title : 'Express',
+        id : rows[0].id,
+        name : rows[0].name,
+        tel : rows[0].tel,
+        birthday : rows[0].birthday,
+      });
+    }
+  });
 });
 
 /*POST로 들어온 처리*/
