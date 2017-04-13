@@ -1,18 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>
-    <%= title %>
-  </title>
-  <!--Jquery-->
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" />
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-  <script src="//code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
-  <script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
-  <!-- 부트스트랩 -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <% layout('layout') -%>
   <script>
     $(function() {
         $("#birth").datepicker({
@@ -29,7 +15,6 @@
         });
     });
   </script>
-</head>
 <body class="container">
   <form name="form_register" action="/users" method="POST">
     <div>
@@ -57,5 +42,3 @@
     </div>
   </form>
 </body>
-
-</html>

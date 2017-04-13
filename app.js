@@ -1,5 +1,6 @@
 //npm 모듈 선언부분
 const express = require('express');
+const engine = require('ejs-locals');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
@@ -17,6 +18,7 @@ var app = express();
 // View 엔진 정의
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.engine('ejs',engine);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
