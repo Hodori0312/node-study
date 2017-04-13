@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
 router.get('/:user_code',function(req,res,next){
   var code = req.params.user_code;
   //sql 정의
-  var sql = 'select id,name,tel,DATE_FORMAT(birthday,"%Y-%m-%d") as birthday from User where code=?';
+  var sql = 'select code,id,name,tel,DATE_FORMAT(birthday,"%Y-%m-%d") as birthday from User where code=?';
   //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
   conn.query(sql,[code],function(err,rows,fields){
     //쿼리실행의 콜백함수 정의
@@ -41,8 +41,9 @@ router.get('/:user_code',function(req,res,next){
       console.log(err);
       res.status(500).send('Internal Server Error');
     }else {
-      res.render('users', {
+      res.render('users_modify', {
         title : 'Express',
+        code : rows[0].code,
         id : rows[0].id,
         name : rows[0].name,
         tel : rows[0].tel,
@@ -54,6 +55,8 @@ router.get('/:user_code',function(req,res,next){
 
 /*POST로 들어온 처리*/
 //post로 넘어온 값을 bodyParser에서 처리하여 json형식으로 넘겨줌
+
+//회원가입처리
 router.post('/', function(req, res, next) {
   var id = req.body.id;
   var password = req.body.password;
@@ -68,24 +71,35 @@ router.post('/', function(req, res, next) {
   var now=moment().format('YYYY-MM-DD HH:mm:ss');
   //현재 접속한 ip정보를 받아옴
   var ip =requestIp.getClientIp(req);
-  //sql 정의
-  var sql = 'insert into User (id,password,name,tel,birthday,ip,reg_date) values (?,?,?,?,?,?,?)';
-  //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
-  conn.query(sql,[id,password,name,tel,birth,ip,now],function(err,rows,fields){
-    //쿼리실행의 콜백함수 정의
-    if(err) {
+  var sql ='select count(*) as cnt from User where id = ?';
+  conn.query(sql,[id],function(err,rows,fields){
+    if(err){
       console.log(err);
       res.status(500).send('Internal Server Error');
-    }else {
-      res.redirect('/');     
+    }else{
+      if(rows[0].cnt>0){
+        res.status(403).send('<script>alert("이미 가입된 아이디가 있습니다");location.href="/users";</script>');
+      }else{
+        //sql 정의
+        var sql = 'insert into User (id,password,name,tel,birthday,ip,reg_date) values (?,?,?,?,?,?,?)';
+        //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
+        conn.query(sql,[id,password,name,tel,birth,ip,now],function(err,rows,fields){
+          //쿼리실행의 콜백함수 정의
+          if(err) {
+            console.log(err);
+            res.status(500).send('Internal Server Error');
+          }else {
+            res.redirect('/');     
+          }
+        });
+      }
     }
   });
 });
 
 //회원수정처리
-
-router.post('/:user_id', function(req, res, next) {
-  var id = req.body.id;
+router.post('/:user_code', function(req, res, next) {
+  var code = req.body.code;
   var password = req.body.password;
   //password 암호화 부분
   var shasum = crypto.createHash('sha512');

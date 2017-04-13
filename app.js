@@ -36,15 +36,14 @@ app.use(session({
 }));
 // 세션을 모든 곳에서 사용 가능하도록 만든다.
 app.use(function(req, res, next) {
-  res.locals.user_id = req.session.user_id;
-  res.locals.user_name = req.session.user_name;
-  res.locals.user_code = req.session.user_code;
+  res.locals.session = req.session;
   next();
 });
 
 //해당 주소로 넘어오면 라우팅 파일 활성
 app.use('/', index);
 app.use('/users', users);
+app.use('/users_modify', users);
 
 // 404에러 처리부분(파일이 없을 경우)
 app.use(function(req, res, next) {
