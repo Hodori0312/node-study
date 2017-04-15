@@ -2,63 +2,8 @@
 //mysql,Crypto(암호화),db정보를 담아두는 모듈
 const express = require('express');
 const router = express.Router();
-const mysql = require('mysql');
-const db_config  = require('../db-config.json');
 const crypto = require('crypto');
-const Sequelize = require('sequelize');
-
-/* Sequelize 연결*/
-const sequelize = new Sequelize(
-  db_config.database,
-  db_config.user,
-  db_config.password,
-  {
-    'host' : db_config.host,
-    'dialect' : 'mysql'
-  }
-);
-
-/* Sequelize 모델정의*/
-var User =sequelize.define('User',{
-  code : {
-    type:Sequelize.INTEGER,
-    primaryKey : true,
-    autoIncrement :true,
-  },
-  id : {
-    type:Sequelize.STRING,
-    allowNull : false,
-  },
-  password : {
-    type:Sequelize.STRING,
-    allowNull : false,
-  },
-  name : {
-    type:Sequelize.CHAR(50),
-    allowNull : false,
-  },
-  tel : {
-    type:Sequelize.CHAR(13),
-    allowNull : false,
-  },
-  birthday : {
-    type:Sequelize.DATEONLY,
-    allowNull : false,
-  },
-  reg_date : {
-    type:Sequelize.DATE,
-    allowNull : false,
-  },
-  ip : {
-    type:Sequelize.CHAR(15),
-    allowNull : false,
-  }},
-  {
-	  timestamps: false,
-	  tableName: 'User'
-  }
-);
-
+const User = require('../model/user.js');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });

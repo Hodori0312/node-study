@@ -2,23 +2,10 @@
 //mysql,Crypto(암호화),moment(시간정보를 가져오는 모듈),request-ip(현재 접속 아이피정보를 가져오는 모듈),db정보를 담아두는 모듈
 const express = require('express');
 const router = express.Router();
-const mysql = require('mysql');
 const moment = require('moment');
 const requestIp = require('request-ip');
-const db_config  = require('../db-config.json');
 const crypto = require('crypto');
-
-//mysql 연결정보 저장
-var conn = mysql.createConnection({
-  port     : db_config.port,
-  host     : db_config.host,
-  user     : db_config.user,
-  password : db_config.password,
-  database : db_config.database,
-});
-
-//mysql 연결처리
-conn.connect();
+const User = require('../model/user.js');
 
 function loginCheck(){
   if(req.session.user_code!=code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>')
@@ -71,28 +58,26 @@ router.post('/', function(req, res, next) {
   var now=moment().format('YYYY-MM-DD HH:mm:ss');
   //현재 접속한 ip정보를 받아옴
   var ip =requestIp.getClientIp(req);
-  var sql ='select count(*) as cnt from User where id = ?';
-  conn.query(sql,[id],function(err,rows,fields){
-    if(err){
-      console.log(err);
-      res.status(500).send('Internal Server Error');
+  User.findOrCreate({
+    where : {
+      id : id
+    },
+    defaults :{
+      password:password,
+      name:name,
+      tel:tel,
+      birthday:birth,
+      ip:ip,
+      reg_date:now,
+    }
+  }).spread((user,created)=>{
+    console.log(user.get({
+      plain: true
+    }));
+    if(created===true){
+      res.send('<script>alert("정상적으로 가입되었습니다");location.href="/";</script>');
     }else{
-      if(rows[0].cnt>0){
-        res.status(403).send('<script>alert("이미 가입된 아이디가 있습니다");location.href="/users";</script>');
-      }else{
-        //sql 정의
-        var sql = 'insert into User (id,password,name,tel,birthday,ip,reg_date) values (?,?,?,?,?,?,?)';
-        //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
-        conn.query(sql,[id,password,name,tel,birth,ip,now],function(err,rows,fields){
-          //쿼리실행의 콜백함수 정의
-          if(err) {
-            console.log(err);
-            res.status(500).send('Internal Server Error');
-          }else {
-            res.redirect('/');     
-          }
-        });
-      }
+      res.send('<script>alert("이미 가입된 아이디가 있습니다");location.href="/users";</script>');
     }
   });
 });
