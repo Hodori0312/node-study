@@ -5,18 +5,59 @@ const router = express.Router();
 const mysql = require('mysql');
 const db_config  = require('../db-config.json');
 const crypto = require('crypto');
+const Sequelize = require('sequelize');
 
-//mysql 연결정보 저장
-var conn = mysql.createConnection({
-  port     : db_config.port,
-  host     : db_config.host,
-  user     : db_config.user,
-  password : db_config.password,
-  database : db_config.database,
-});
+/* Sequelize 연결*/
+const sequelize = new Sequelize(
+  db_config.database,
+  db_config.user,
+  db_config.password,
+  {
+    'host' : db_config.host,
+    'dialect' : 'mysql'
+  }
+);
 
-//mysql 연결처리
-conn.connect();
+/* Sequelize 모델정의*/
+var User =sequelize.define('User',{
+  code : {
+    type:Sequelize.INTEGER,
+    primaryKey : true,
+    autoIncrement :true,
+  },
+  id : {
+    type:Sequelize.STRING,
+    allowNull : false,
+  },
+  password : {
+    type:Sequelize.STRING,
+    allowNull : false,
+  },
+  name : {
+    type:Sequelize.CHAR(50),
+    allowNull : false,
+  },
+  tel : {
+    type:Sequelize.CHAR(13),
+    allowNull : false,
+  },
+  birthday : {
+    type:Sequelize.DATEONLY,
+    allowNull : false,
+  },
+  reg_date : {
+    type:Sequelize.DATE,
+    allowNull : false,
+  },
+  ip : {
+    type:Sequelize.CHAR(15),
+    allowNull : false,
+  }},
+  {
+	  timestamps: false,
+	  tableName: 'User'
+  }
+);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -31,23 +72,18 @@ router.post('/login', function(req, res, next) {
   var shasum = crypto.createHash('sha512');
   shasum.update(password);
   password = shasum.digest('hex');
-  //sql 정의
-  var sql = 'select code,count(*) as cnt from User where id=? and password=?';
-  //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
-  conn.query(sql,[id,password],function(err,rows,fields){
-    //쿼리실행의 콜백함수 정의
-    if(err) {
-      console.log(err);
-      res.status(500).send('Internal Server Error');
-    }else {
-      var cnt=rows[0].cnt;
-      if(cnt==1){
-        req.session.user_id=id;
-        req.session.user_code=rows[0].code;
-        res.send('<script>alert("정상적으로 로그인 되었습니다");location.href="/";</script>');
-      }else{
-        res.send('<script>alert("아이디나 비밀번호가 틀립니다");return false;</script>');
-      }
+  User.findAndCount({
+    where : {
+      id : id,
+      password : password
+    }
+  }).then((result)=>{
+    if(result.count>0){
+      req.session.user_id=id;
+      req.session.user_code=result.rows[0].code;
+      res.send('<script>alert("정상적으로 로그인 되었습니다");location.href="/";</script>');
+    }else if(r.count==0){
+      res.send('<script>alert("아이디나 비밀번호가 틀립니다");return false;</script>');
     }
   });
 });
@@ -59,7 +95,5 @@ router.get('/logout', function(req, res, next) {
     res.send('<script>alert("로그아웃 되었습니다"); location.href="/";</script>')
   });
 });
-
-module.exports = router;
 
 module.exports = router;
