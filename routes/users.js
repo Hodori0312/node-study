@@ -19,25 +19,24 @@ router.get('/', function(req, res, next) {
 
 router.get('/:user_code',function(req,res,next){
   var code = req.params.user_code;
-  //sql 정의
-  var sql = 'select code,id,name,tel,DATE_FORMAT(birthday,"%Y-%m-%d") as birthday from User where code=?';
-  //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
-  conn.query(sql,[code],function(err,rows,fields){
-    //쿼리실행의 콜백함수 정의
-    if(err) {
-      console.log(err);
-      res.status(500).send('Internal Server Error');
-    }else {
+  User.findById(code).then(
+    (result)=>{
+      console.log(result.dataValues);
+      var data=result.dataValues;
       res.render('users_modify', {
         title : 'Express',
-        code : rows[0].code,
-        id : rows[0].id,
-        name : rows[0].name,
-        tel : rows[0].tel,
-        birthday : rows[0].birthday,
+        code : data.code,
+        id : data.id,
+        name : data.name,
+        tel : data.tel,
+        birthday : data.birthday,
       });
+    },
+    (reject)=>{
+      console.log(err);
+      res.status(500).send('Internal Server Error');
     }
-  });
+  )
 });
 
 /*POST로 들어온 처리*/
@@ -70,10 +69,7 @@ router.post('/', function(req, res, next) {
       ip:ip,
       reg_date:now,
     }
-  }).spread((user,created)=>{
-    console.log(user.get({
-      plain: true
-    }));
+  }).all().then((user,created)=>{
     if(created===true){
       res.send('<script>alert("정상적으로 가입되었습니다");location.href="/";</script>');
     }else{
@@ -94,16 +90,22 @@ router.post('/:user_code', function(req, res, next) {
   var tel = req.body.tel;
   var birth = req.body.birth;
   var code = req.params.user_code;
-  //sql 정의
-  var sql = 'update User set password=?,name=?,tel=?,birthday=? where code=?';
-  //query를 실행하는부분 ( 첫번째 인자값에 query문, 두번째 인자값에는 '?'로 처리된 value값을 정의함)
-  conn.query(sql,[password,name,tel,birth,code],function(err,rows,fields){
-    //쿼리실행의 콜백함수 정의
-    if(err) {
+  User.update({
+    password : password,
+    name : name,
+    tel : tel,
+    birthday : birth,
+  },{
+    where :{
+      code : code
+    }
+  }
+  ).then((count,rows)=>{
+    if(count>0){
+      res.send('<script>alert("회원정보수정이 완료되었습니다"); location.href="/users/'+code+'";</script>');
+    }else{
       console.log(err);
       res.status(500).send('Internal Server Error');
-    }else {
-      res.redirect('/');     
     }
   });
 });

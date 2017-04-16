@@ -23,14 +23,20 @@ router.post('/login', function(req, res, next) {
       password : password
     }
   }).then((result)=>{
+    console.log(result.count);
     if(result.count>0){
       req.session.user_id=id;
       req.session.user_code=result.rows[0].code;
       res.send('<script>alert("정상적으로 로그인 되었습니다");location.href="/";</script>');
-    }else if(r.count==0){
-      res.send('<script>alert("아이디나 비밀번호가 틀립니다");return false;</script>');
+    }else if(result.count==0){
+      res.send('<script>alert("아이디나 비밀번호가 틀립니다");location.href="/";</script>');
     }
-  });
+  },
+    (err)=>{
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    }
+  );
 });
 
 /* 로그아웃 처리 */
