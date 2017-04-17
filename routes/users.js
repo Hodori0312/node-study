@@ -7,10 +7,6 @@ const requestIp = require('request-ip');
 const crypto = require('crypto');
 const User = require('../model/user.js');
 
-function loginCheck(){
-  if(req.session.user_code!=code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>')
-}
-
 /* GET home page. */
 //user.js의 '/'로 들어오는 처리를 받을 라우터 정의
 router.get('/', function(req, res, next) {
@@ -19,6 +15,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/:user_code',function(req,res,next){
   var code = req.params.user_code;
+  if(!req.session.user || req.session.user_code!=code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
   User.findById(code).then(
     (result)=>{
       console.log(result.dataValues);

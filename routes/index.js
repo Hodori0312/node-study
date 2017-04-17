@@ -43,7 +43,7 @@ router.post('/login', function(req, res, next) {
 router.get('/logout', function(req, res, next) {
   req.session.destroy(function(err){
     if(err) console.log(err);
-    res.send('<script>alert("로그아웃 되었습니다"); location.href="/";</script>')
+    res.send('<script>alert("로그아웃 되었습니다"); location.href="/";</script>');
   });
 });
 
