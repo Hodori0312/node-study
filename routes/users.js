@@ -29,7 +29,7 @@ router.get('/:user_code',function(req,res,next){
         id : data.id,
         name : data.name,
         tel : data.tel,
-        birthday : data.birthday,
+        birthday : moment(data.birthday).format("YYYY-MM-DD"),
       });
     },
     (reject)=>{
@@ -47,7 +47,7 @@ router.post('/', function(req, res, next) {
   var id = req.body.id;
   var password = req.body.password;
   //password 암호화 부분
-  var shasum = crypto.createHash('sha512');
+  var shasum = crypto.createHash('sha256');
   shasum.update(password);
   password = shasum.digest('hex');
   var name = req.body.name;

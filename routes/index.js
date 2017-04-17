@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 router.post('/login', function(req, res, next) {
   var id = req.body.id;
   var password = req.body.password;
-  var shasum = crypto.createHash('sha512');
+  var shasum = crypto.createHash('sha256');
   shasum.update(password);
   password = shasum.digest('hex');
   User.findAndCount({

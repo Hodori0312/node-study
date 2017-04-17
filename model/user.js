@@ -35,7 +35,8 @@ var User =sequel.define('User',{
   ip : {
     type:Sequelize.CHAR(15),
     allowNull : false,
-  }},
+  }
+},
   {
 	  timestamps: false,
 	  tableName: 'User'
