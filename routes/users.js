@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/:user_code',function(req,res,next){
   var code = req.params.user_code;
-  if(!req.session.user || req.session.user_code!=code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
+  if(!req.session.user_code || req.session.user_code!=code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
   User.findById(code).then(
     (result)=>{
       console.log(result.dataValues);
