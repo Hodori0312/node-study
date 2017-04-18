@@ -5,7 +5,7 @@ const router = express.Router();
 const moment = require('moment');
 const requestIp = require('request-ip');
 const crypto = require('crypto');
-const User = require('../model/user.js');
+const models = require('../models');
 
 /* GET home page. */
 //user.js의 '/'로 들어오는 처리를 받을 라우터 정의
@@ -14,19 +14,20 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:user_code',function(req,res,next){
-  var code = req.params.user_code;
-  if(!req.session.user_code || req.session.user_code!=code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
-  User.findById(code).then(
+  var IDX = req.params.user_code;
+  if(!req.session.user_code || req.session.user_code!=IDX) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
+  models.User.findById(IDX).then(
     (result)=>{
+      console.log(result);
       console.log(result.dataValues);
       var data=result.dataValues;
       res.render('users_modify', {
         title : 'Express',
-        code : data.code,
-        id : data.id,
-        name : data.name,
-        tel : data.tel,
-        birthday : moment(data.birthday).format("YYYY-MM-DD"),
+        code : data.IDX,
+        id : data.ID,
+        name : data.NAME,
+        tel : data.TEL,
+        birthday : moment(data.BIRTH).format("YYYY-MM-DD"),
       });
     },
     (reject)=>{
@@ -52,19 +53,16 @@ router.post('/', function(req, res, next) {
   var birth = req.body.birth;
   //현재 시간정보를 받아옴
   var now=moment().format('YYYY-MM-DD HH:mm:ss');
-  //현재 접속한 ip정보를 받아옴
-  var ip =requestIp.getClientIp(req);
-  User.findOrCreate({
+  models.User.findOrCreate({
     where : {
-      id : id
+      ID : id
     },
     defaults :{
-      password:password,
-      name:name,
-      tel:tel,
-      birthday:birth,
-      ip:ip,
-      reg_date:now,
+      PASS:password,
+      NAME:name,
+      TEL:tel,
+      BIRTH:birth,
+      REG_DATE:now,
     }
   }).all().then((user,created)=>{
     if(created===true){
@@ -77,24 +75,23 @@ router.post('/', function(req, res, next) {
 
 //회원수정처리
 router.post('/:user_code', function(req, res, next) {
-  var code = req.body.code;
   var password = req.body.password;
   //password 암호화 부분
-  var shasum = crypto.createHash('sha512');
+  var shasum = crypto.createHash('sha256');
   shasum.update(password);
   password = shasum.digest('hex');
   var name = req.body.name;
   var tel = req.body.tel;
   var birth = req.body.birth;
   var code = req.params.user_code;
-  User.update({
-    password : password,
-    name : name,
-    tel : tel,
-    birthday : birth,
+  models.User.update({
+    PASS : password,
+    NAME : name,
+    TEL : tel,
+    BIRTH : birth,
   },{
     where :{
-      code : code
+      IDX : code
     }
   }
   ).then((count,rows)=>{

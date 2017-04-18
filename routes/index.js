@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const User = require('../model/user.js');
+const models = require('../models');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -17,18 +17,18 @@ router.post('/login', function(req, res, next) {
   var shasum = crypto.createHash('sha256');
   shasum.update(password);
   password = shasum.digest('hex');
-  User.findAndCount({
+  models.User.findAndCount({
     where : {
-      id : id,
-      password : password
+      ID : id,
+      PASS : password
     }
   }).then((result)=>{
     console.log(result.count);
     if(result.count>0){
       req.session.user_id=id;
-      req.session.user_code=result.rows[0].code;
+      req.session.user_code=result.rows[0].IDX;
       res.send('<script>alert("정상적으로 로그인 되었습니다");location.href="/";</script>');
-    }else if(result.count==0){
+    }else if(result.count===0){
       res.send('<script>alert("아이디나 비밀번호가 틀립니다");location.href="/";</script>');
     }
   },
