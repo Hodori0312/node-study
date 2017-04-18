@@ -1,93 +1,66 @@
 "use strict";
 
-module.exports = function(sequelize,DataTypes){
-  var User = sequelize.define('User',{
-    IDX: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement : true,
-    },
-    ID: {
-      type: DataTypes.STRING(50),
-    },
-    PASS: {
-      type: DataTypes.STRING(128),
-      allowNull : false,
-    },
-    NAME: {
-      type: DataTypes.STRING(30),
-      allowNull : false,
-    },
-    TEL: {
-      type: DataTypes.STRING(13),
-      allowNull: true
-    },
-    PHONE: {
-      type: DataTypes.STRING(13),
-      allowNull: true
-    },
-    EMAIL: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    BIRTH: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
-    },
-    REG_DATE: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
-    }
-  }, {
-    timestamps: false,
-    tableName: 'USER'
-  }
-  );
-  return User;
-};
-// const Sequelize = require('sequelize');
-
-// var sequel = require('../model/sequelize.js');
-// /* Sequelize 모델정의*/
-// var User =sequel.define('User',{
-//     IDX: {
-//       type: Sequelize.INTEGER,
-//       primaryKey: true
-//     },
-//     ID: {
-//       type: Sequelize.STRING(50),
-//     },
-//     PASS: {
-//       type: Sequelize.STRING(128),
-//       allowNull : false,
-//     },
-//     NAME: {
-//       type: Sequelize.STRING(30),
-//       allowNull : false,
-//     },
-//     TEL: {
-//       type: Sequelize.STRING(13),
-//       allowNull: true
-//     },
-//     PHONE: {
-//       type: Sequelize.STRING(13),
-//       allowNull: true
-//     },
-//     EMAIL: {
-//       type: Sequelize.STRING(100),
-//       allowNull: true
-//     },
-//     BIRTH: {
-//       type: Sequelize.DATEONLY,
-//       allowNull: false
-//     },
-//     REG_DATE: {
-//       type: Sequelize.DATEONLY,
-//       allowNull: false
-//     }
-//   }, {
-//     timestamps: false,
-//     tableName: 'USER'
-//   }
-// );
-// module.exports = User;
+module.exports = function (sequelize, DataTypes) {
+    var User = sequelize.define('user',{
+          idx: {
+            type: DataTypes.INTEGER(11),
+            primaryKey: true,
+            autoIncrement: true,
+          },
+          id: {
+            type: DataTypes.STRING(50),
+            validate: {
+              is: ["^[a-z0-9_-]+$", 'i'],
+            },
+          },
+          pass: {
+            type: DataTypes.STRING(200),
+          },
+          name: {
+            type: DataTypes.STRING(50),
+            allowNull: true,
+          },
+          tel: {
+            type: DataTypes.STRING(20),
+            allowNull: true,
+          },
+          phone: {
+            type: DataTypes.STRING(20),
+            allowNull: true,
+          },
+          email: {
+            type: DataTypes.STRING(100),
+            allowNull: true,
+            validate: {
+              isEmail: true,
+            },
+          },
+          birth: {
+            type: DataTypes.DATEONLY,
+            allowNull: true,
+            validate: {
+              isDate: true,
+            },
+          },
+          reg_date: {
+            type: DataTypes.DATEONLY,
+            validate: {
+              isDate: true
+            },
+            defaultVlue:DataTypes.now,
+          },
+          ip: {
+            type: DataTypes.STRING(15),
+            allowNull: true,
+            validate: {
+              isIP: true,
+            },
+          }
+        },
+        {
+          timestamps: false,
+          tableName: 'user',
+        }
+      );
+      return User;
+    };

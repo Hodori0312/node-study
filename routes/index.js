@@ -17,16 +17,16 @@ router.post('/login', function(req, res, next) {
   var shasum = crypto.createHash('sha256');
   shasum.update(password);
   password = shasum.digest('hex');
-  models.User.findAndCount({
+  models.user.findAndCount({
     where : {
-      ID : id,
-      PASS : password
+      id : id,
+      pass : password
     }
   }).then((result)=>{
     console.log(result.count);
     if(result.count>0){
       req.session.user_id=id;
-      req.session.user_code=result.rows[0].IDX;
+      req.session.user_code=result.rows[0].idx;
       res.send('<script>alert("정상적으로 로그인 되었습니다");location.href="/";</script>');
     }else if(result.count===0){
       res.send('<script>alert("아이디나 비밀번호가 틀립니다");location.href="/";</script>');

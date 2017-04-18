@@ -16,17 +16,17 @@ router.get('/', function(req, res, next) {
 router.get('/:user_code',function(req,res,next){
   var IDX = req.params.user_code;
   if(!req.session.user_code || req.session.user_code!=IDX) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
-  models.User.findById(IDX).then(
+  models.user.findById(IDX).then(
     (result)=>{
       console.log(result);
       console.log(result.dataValues);
       var data=result.dataValues;
       res.render('users_modify', {
         title : 'Express',
-        code : data.IDX,
-        id : data.ID,
-        name : data.NAME,
-        tel : data.TEL,
+        code : data.idx,
+        id : data.id,
+        name : data.name,
+        tel : data.tel,
         birthday : moment(data.BIRTH).format("YYYY-MM-DD"),
       });
     },
@@ -51,18 +51,20 @@ router.post('/', function(req, res, next) {
   var name = req.body.name;
   var tel = req.body.tel;
   var birth = req.body.birth;
+  var ip = requestIp.getClientIp(req);
   //현재 시간정보를 받아옴
   var now=moment().format('YYYY-MM-DD HH:mm:ss');
-  models.User.findOrCreate({
+  models.user.findOrCreate({
     where : {
-      ID : id
+      id : id
     },
     defaults :{
-      PASS:password,
-      NAME:name,
-      TEL:tel,
-      BIRTH:birth,
-      REG_DATE:now,
+      pass:password,
+      name:name,
+      tel:tel,
+      birth:birth,
+      reg_date:now,
+      ip : ip,
     }
   }).all().then((result)=>{
     if(result[1]===true){
@@ -89,14 +91,14 @@ router.post('/:user_code', function(req, res, next) {
   var tel = req.body.tel;
   var birth = req.body.birth;
   var code = req.params.user_code;
-  models.User.update({
-    PASS : password,
-    NAME : name,
-    TEL : tel,
-    BIRTH : birth,
+  models.user.update({
+    pass : password,
+    name : name,
+    tel : tel,
+    birth : birth,
   },{
     where :{
-      IDX : code
+      idx : code
     }
   }
   ).then((count,rows)=>{

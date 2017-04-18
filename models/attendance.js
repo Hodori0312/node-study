@@ -1,13 +1,25 @@
 module.exports = function (sequelize, DataTypes) {
-    var attendance = sequelize.define('attendance',{
-        user_id: {
-            type: DataTypes.STRING(20),
-            primaryKey: true
+    var attendance = sequelize.define('attendance', {
+        idx: {
+            type: DataTypes.INTEGER(11),
+            primaryKey: true,
         },
-        attendance_date: {
+        date: {
             type: DataTypes.DATEONLY,
-            primaryKey: true
-        }
+            primaryKey: true,
+            validate: {
+                isDate: true,
+            },
+        },
+        memo: {
+            type: DataTypes.STRING(2000),
+        },
+        submit_date: {
+            type: DataTypes.DATE,
+        },
+        file_name: {
+            type: DataTypes.STRING(100),
+        },
     }, {
         timestamps: false,
         tableName: 'attendance'
