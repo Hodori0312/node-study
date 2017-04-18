@@ -64,13 +64,18 @@ router.post('/', function(req, res, next) {
       BIRTH:birth,
       REG_DATE:now,
     }
-  }).all().then((user,created)=>{
-    if(created===true){
+  }).all().then((result)=>{
+    if(result[1]===true){
       res.send('<script>alert("정상적으로 가입되었습니다");location.href="/";</script>');
     }else{
       res.send('<script>alert("이미 가입된 아이디가 있습니다");location.href="/users";</script>');
     }
-  });
+  },
+  (reject)=>{
+    res.status(500).send('Internal Server Error');
+    console.log(reject);
+  }
+  );
 });
 
 //회원수정처리

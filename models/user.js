@@ -4,7 +4,8 @@ module.exports = function(sequelize,DataTypes){
   var User = sequelize.define('User',{
     IDX: {
       type: DataTypes.INTEGER,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement : true,
     },
     ID: {
       type: DataTypes.STRING(50),
