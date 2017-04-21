@@ -11,6 +11,7 @@ const session = require('express-session');
 //라우터 선언
 var index = require('./routes/index');
 var users = require('./routes/users');
+var attendance = require('./routes/attendance');
 
 //Express 프레임워크 초기화
 var app = express();
@@ -44,6 +45,7 @@ app.use(function(req, res, next) {
 app.use('/', index);
 app.use('/users', users);
 app.use('/users_modify', users);
+app.use('/attendance', attendance);
 
 // 404에러 처리부분(파일이 없을 경우)
 app.use(function(req, res, next) {

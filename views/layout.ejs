@@ -32,6 +32,7 @@
                             <li><a href="/users">회원가입</a></li>
                             <li><a data-toggle="modal" data-target="#exampleModal">로그인</a></li>
                             <% }else{ %>
+                                <li><a href="/attendance">출석체크</a></li>
                                 <li><a href="/users/<%=session.user_code%>">회원정보수정</a></li>
                                 <li><a href="/logout">로그아웃</a></li>
                                 <% } %>
