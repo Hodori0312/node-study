@@ -9,7 +9,12 @@ router.get('/', function (req, res, next) {
   var today = moment().format('YYYY-MM-DD');
   models.user.findAndCountAll({
     attributes : ['name',],
-    include : { model : models.attendance},
+    include : {
+      model : models.attendance,
+      where : {
+        date : today,
+      }
+    },
   }).then((result)=>{
     console.log(result);
     res.render('attendance',{
