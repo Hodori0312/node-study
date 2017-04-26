@@ -13,12 +13,15 @@ module.exports = function (sequelize, DataTypes) {
         },
         memo: {
             type: DataTypes.STRING(2000),
+            allowNull: true,
         },
         submit_date: {
             type: DataTypes.DATE,
+            allowNull: true,
         },
         file_name: {
             type: DataTypes.STRING(100),
+            allowNull: true,
         },
     }, {
         timestamps: false,

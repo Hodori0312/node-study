@@ -6,12 +6,14 @@ const moment = require('moment');
 const models = require('../models');
 /* GET home page. */
 router.get('/', function (req, res, next) {
+  if(!req.session.user_code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
   res.render('attendance', {
     title: 'Express'
   });
 });
 
 router.post('/', function (req, res, next) {
+  if(!req.session.user_code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
   var today = moment().format('YYYY-MM-DD');
   var now = moment().format('YYYY-MM-DD HH:mm:ss');
   var user_code = req.session.user_code;
@@ -19,13 +21,11 @@ router.post('/', function (req, res, next) {
   console.log(now);
   console.log(memo);
   models.attendance.findOrCreate({
-    where: {
+    where : {
       date: today,
-      idx: user_code
-    },
-    default: {
       idx: user_code,
-      date: today,
+    },
+    defaults :{
       memo: memo,
       submit_date: now,
     }

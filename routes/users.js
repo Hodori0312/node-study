@@ -82,6 +82,8 @@ router.post('/', function(req, res, next) {
 
 //회원수정처리
 router.post('/:user_code', function(req, res, next) {
+  var IDX = req.params.user_code;
+  if(!req.session.user_code || req.session.user_code!=IDX) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
   var password = req.body.password;
   //password 암호화 부분
   var shasum = crypto.createHash('sha256');
