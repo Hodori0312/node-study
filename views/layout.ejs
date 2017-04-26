@@ -3,7 +3,7 @@
 
 <head>
     <title>
-        <%= title %>
+        NodeJS_khy
     </title>
     <!--Jquery-->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -28,11 +28,11 @@
         <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         <li><a href="/">홈</a></li>
+                        <li><a href="/attendance">출석체크</a></li>
                         <% if(!session.user_id){ %>
                             <li><a href="/users">회원가입</a></li>
                             <li><a data-toggle="modal" data-target="#exampleModal">로그인</a></li>
                             <% }else{ %>
-                                <li><a href="/attendance">출석체크</a></li>
                                 <li><a href="/users/<%=session.user_code%>">회원정보수정</a></li>
                                 <li><a href="/logout">로그아웃</a></li>
                                 <% } %>

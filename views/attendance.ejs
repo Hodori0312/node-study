@@ -1,20 +1,30 @@
 <% layout('layout') -%>
-<body class="container">
-  <form name="form_register" action="/attendance" method="POST">
-    <div>
-      <section>
-        <div class="col-md-6">
-          <div class=>
-            <div class>
-              <h3>출석하기</h3>
-              <div>
-              <div class="form-group"><label for="id">출석내용 : </label><textarea class="form-control" name="memo"></textarea></div>
-              <div class="form-group"><button class="btn btn-block btn-primary" onclick="submit()">출석하기</button></div>
+
+  <body class="container">
+    <form name="form_register" action="/attendance" method="POST">
+      <div>
+        <section>
+          <div class="col-md-6">
+            <div class=>
+              <div class>
+                <h3>출석하기</h3>
+                <div>
+                  <% if(contents){ %>
+                  <div>총 <%= count %>건</div>
+                  <ul class="list-group">
+                    <%
+                      contents.forEach((content)=>{
+                    %>
+                    <li class="list-group-item"><div><%= content['memo'] %></div><div><%= content['submit_date']%></div></li>
+                    <% });} %>
+                  </ul>
+                  <div class="form-group"><label for="id">출석내용 : </label><textarea class="form-control" name="memo"></textarea></div>
+                  <div class="form-group"><button class="btn btn-block btn-primary" onclick="submit()">출석하기</button></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
-  </form>
-</body>
+        </section>
+      </div>
+    </form>
+  </body>

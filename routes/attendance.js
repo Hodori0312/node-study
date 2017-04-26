@@ -5,15 +5,22 @@ const router = express.Router();
 const moment = require('moment');
 const models = require('../models');
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  if(!req.session.user_code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
-  res.render('attendance', {
-    title: 'Express'
+router.get('/', function (req, res, next) {  
+  var today = moment().format('YYYY-MM-DD');
+  models.user.findAndCountAll({
+    attributes : ['name',],
+    include : { model : models.attendance},
+  }).then((result)=>{
+    console.log(result);
+    res.render('attendance',{
+      contents : result.rows,
+      count : result.count,
+    });
   });
 });
 
 router.post('/', function (req, res, next) {
-  if(!req.session.user_code) res.send('<script>alert("로그인정보를 확인해주세요"); location.href="/";</script>');
+  if(!req.session.user_code) res.send('<script>alert("로그인후 이용해주세요"); location.href="/";</script>');
   var today = moment().format('YYYY-MM-DD');
   var now = moment().format('YYYY-MM-DD HH:mm:ss');
   var user_code = req.session.user_code;
