@@ -13,13 +13,13 @@ router.get('/', function (req, res, next) {
       model : models.attendance,
       where : {
         date : today,
-      }
+      },
     },
   }).then((result)=>{
-    console.log(result);
     res.render('attendance',{
       contents : result.rows,
       count : result.count,
+      moment : moment,
     });
   });
 });

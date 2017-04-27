@@ -10,16 +10,31 @@
                 <h3>출석하기</h3>
                 <div>
                   <% if(contents){ %>
-                  <div>총 <%= count %>건</div>
-                  <ul class="list-group">
-                    <%
+                    <div>총
+                      <%= count %>건</div>
+                    <ul class="list-group">
+                      <%
                       contents.forEach((content)=>{
                     %>
-                    <li class="list-group-item"><div><%= content['memo'] %></div><div><%= content['submit_date']%></div></li>
-                    <% });} %>
-                  </ul>
-                  <div class="form-group"><label for="id">출석내용 : </label><textarea class="form-control" name="memo"></textarea></div>
-                  <div class="form-group"><button class="btn btn-block btn-primary" onclick="submit()">출석하기</button></div>
+                        <li class="list-group-item">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <%= content['attendances'][0]['memo'] %>
+                            </div>
+                            <div class="col-md-6 text-right">
+                              <%= moment(content['attendances'][0]['submit_date']).format("YYYY-MM-DD HH:mm:ss") %>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                            <%= content['name']%>
+                            </div>
+                          </div>
+                        </li>
+                        <% });} %>
+                    </ul>
+                    <div class="form-group"><label for="id">출석내용 : </label><textarea class="form-control" name="memo"></textarea></div>
+                    <div class="form-group"><button class="btn btn-block btn-primary" onclick="submit()">출석하기</button></div>
                 </div>
               </div>
             </div>
