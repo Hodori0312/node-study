@@ -1,4 +1,31 @@
 <% layout('layout') -%>
+  <script>
+    $(function () {
+      $("#date").datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '이전 달',
+        nextText: '다음 달',
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년',
+        changeMonth: true,
+        changeYear: true,
+        yearRange: 'c-100:c',
+        onSelect: (date) => {
+          location.href = '/attendance/' + date;
+        },
+        beforeShow: function () {
+          setTimeout(function () {
+            $('.ui-datepicker').css('z-index', 99999999999999);
+          }, 0);
+        }
+      });
+    });
+  </script>
 
   <body class="container">
     <form name="form_register" action="/attendance" method="POST">
@@ -9,13 +36,23 @@
               <div class>
                 <h3>출석하기</h3>
                 <div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="input-group">
+                        <input type="text" class="form-control " id="date" value=<%=date%> readonly/>
+                        <span class="input-group-addon" id="date_picker">
+                          <a href="#"><span class="glyphicon glyphicon-calendar"></span></a>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                   <% if(contents){ %>
                     <div>총
                       <%= count %>건</div>
                     <ul class="list-group">
                       <%
                       contents.forEach((content)=>{
-                    %>
+                      %>
                         <li class="list-group-item">
                           <div class="row">
                             <div class="col-md-6">
@@ -27,13 +64,22 @@
                           </div>
                           <div class="row">
                             <div class="col-md-12">
-                            <%= content['name']%>
+                              <%= content['name']%>
                             </div>
                           </div>
                         </li>
                         <% });} %>
                     </ul>
-                    <div class="form-group"><label for="id">출석내용 : </label><textarea class="form-control" name="memo"></textarea></div>
+                    <div class="form-group"><label for="id">출석내용 : </label>
+                      <div class="input-group">
+                        <textarea class="form-control" name="memo"></textarea>
+                        <div class="input-group-addon">
+                          <label class="btn btn-default btn-file glyphicon glyphicon-camera">
+                            <input type="file" style="display:none;">
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                     <div class="form-group"><button class="btn btn-block btn-primary" onclick="submit()">출석하기</button></div>
                 </div>
               </div>

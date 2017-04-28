@@ -5,8 +5,13 @@ const router = express.Router();
 const moment = require('moment');
 const models = require('../models');
 /* GET home page. */
-router.get('/', function (req, res, next) {  
-  var today = moment().format('YYYY-MM-DD');
+router.get('/:date?', function (req, res, next) {  
+  console.log('zzzz'+req.params.date);
+  if(req.params.date){
+    var today = req.params.date;
+  }else{
+    var today = moment().format('YYYY-MM-DD');
+  }
   models.user.findAndCountAll({
     attributes : ['name',],
     include : {
@@ -20,6 +25,7 @@ router.get('/', function (req, res, next) {
       contents : result.rows,
       count : result.count,
       moment : moment,
+      date : today,
     });
   });
 });
