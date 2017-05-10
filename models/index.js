@@ -21,9 +21,14 @@ var db_config = env == "production" ? prodConfig : require('../db-config.json');
 const sequelize = new Sequelize(
   process.env.DB_NAME || db_config.database,
   process.env.DB_USER || db_config.user,
-  process.env.DB_PASSWORD || db_config.password, env == "production" ? prodConfig : db_config, {
+  process.env.DB_PASSWORD || db_config.password, env == "production" ? prodConfig : db_config,
+  {
     'host': process.env.DB_HOST || db_config.host,
-    'dialect': 'mysql'
+    'dialect': 'mysql',
+    'dialectOptions': {
+        'useUTC': false, //for reading from database
+    },
+    'timezone': '+09:00', //for writing to database
   }
 );
 var db = {};

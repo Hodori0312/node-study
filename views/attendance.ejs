@@ -28,7 +28,7 @@
   </script>
 
   <body class="container">
-    <form name="form_register" action="/attendance" method="POST">
+    <form name="form_register" action="/attendance" method="POST" enctype="multipart/form-data">
       <div>
         <section>
           <div class="col-md-6">
@@ -54,6 +54,10 @@
                       contents.forEach((content)=>{
                       %>
                         <li class="list-group-item">
+                          <div>
+                            <p class="text-left">
+                              <img src="<%= content['attendances'][0]['file_name'] %>" width="90px;">
+                            </p>
                           <div class="row">
                             <div class="col-md-6">
                               <%= content['attendances'][0]['memo'] %>
@@ -67,6 +71,7 @@
                               <%= content['name']%>
                             </div>
                           </div>
+                          </div>
                         </li>
                         <% });} %>
                     </ul>
@@ -75,7 +80,7 @@
                         <textarea class="form-control" name="memo"></textarea>
                         <div class="input-group-addon">
                           <label class="btn btn-default btn-file glyphicon glyphicon-camera">
-                            <input type="file" style="display:none;">
+                            <input type="file" name="image" style="display:none;">
                           </label>
                         </div>
                       </div>
