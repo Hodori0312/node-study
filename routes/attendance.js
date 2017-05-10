@@ -25,8 +25,8 @@ router.get('/:date?', function (req, res, next) {
         date : today,
       },
     },
+    order: 'idx DESC'
   }).then((result)=>{
-    console.log(result.rows[0].attendances)
     res.render('attendance',{
       contents : result.rows,
       count : result.count,
